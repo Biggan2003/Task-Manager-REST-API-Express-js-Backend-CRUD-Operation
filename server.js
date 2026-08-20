@@ -106,11 +106,46 @@ app.post("/login", async (req, res) => {
 
 
 
-app.get("/tasks", (req, res) => {
+function requireAuth(req, res, next) {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({
+      message: "Authorization token is required"
+    });
+  }
+
+  const parts = authHeader.split(" ");
+
+  if (parts.length !== 2 || parts[0] !== "Bearer") {
+    return res.status(401).json({
+      message: "Invalid authorization format"
+    });
+  }
+
+  const token = parts[1];
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+
+    req.user = decoded;
+
+    next();
+  } catch (error) {
+    return res.status(401).json({
+      message: "Invalid or expired token"
+    });
+  }
+}
+
+
+
+
+app.get("/tasks", requireAuth, (req, res) => {
   res.json(tasks);
 });
 
-app.post("/tasks", (req, res) => {
+app.post("/tasks", requireAuth, (req, res) => {
   const { title, done = false } = req.body;
 
   if (!title || title.trim() === "") {
@@ -130,7 +165,7 @@ app.post("/tasks", (req, res) => {
   res.status(201).json(newTask);
 });
 
-app.put("/tasks/:id", (req, res) => {
+app.put("/tasks/:id", requireAuth, (req, res) => {
   const id = Number(req.params.id);
 
   const task = tasks.find((task) => task.id === id);
@@ -161,7 +196,7 @@ app.put("/tasks/:id", (req, res) => {
 });
 
 
-app.delete("/tasks/:id", (req, res) => {
+app.delete("/tasks/:id", requireAuth, (req, res) => {
   const id = Number(req.params.id);
 
   const taskIndex = tasks.findIndex((task) => task.id === id);
