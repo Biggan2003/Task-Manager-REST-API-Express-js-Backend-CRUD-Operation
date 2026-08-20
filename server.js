@@ -7,38 +7,11 @@ const PORT = 3001;
 
 app.use(express.json());
 
-let tasks = [
-  {
-    id: 1,
-    title: "Learn Express",
-    done: false
-  },
-  {
-    id: 2,
-    title: "Build REST API",
-    done: false
-  },
-  {
-    id: 3,
-    title: "Test API",
-    done: false
-  },
-  {
-    id: 4,
-    title: "Learn python",
-    done: false
-  },
-  {
-    id: 5,
-    title: "Build FAST API",
-    done: false
-  },
-  {
-    id: 6,
-    title: "Test FAST API",
-    done: false
-  }
-];
+
+
+const tasks = require("./data/tasks");
+
+
 
 app.get("/tasks", (req, res) => {
   res.json(tasks);
