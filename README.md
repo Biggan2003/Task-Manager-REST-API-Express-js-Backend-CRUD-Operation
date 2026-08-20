@@ -1,5 +1,7 @@
 # Task Manager REST API
 
+![alt text](image.png)
+
 A simple REST API built with **Node.js** and **Express.js** for managing tasks.
 
 This project demonstrates REST API development using CRUD operations, user authentication, password hashing, JWT-based authorization, and protected routes.
